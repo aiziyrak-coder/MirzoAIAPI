@@ -1,0 +1,34 @@
+# Mirzo AI Deployment Commands
+# Run these commands on server: 167.71.53.238
+# Password: Ziyrak2025Ai
+
+# Step 1: Connect to server
+ssh root@167.71.53.238
+
+# Step 2: Update system and install dependencies
+apt-get update
+apt-get upgrade -y
+apt-get install -y git python3 python3-pip python3-venv nginx curl
+
+# Step 3: Create directory structure
+mkdir -p /root/mirzoai
+cd /root/mirzoai
+
+# Step 4: Download deployment scripts
+wget https://raw.githubusercontent.com/aiziyrak-coder/MirzoAIAPI/main/deploy_all.sh
+wget https://raw.githubusercontent.com/aiziyrak-coder/MirzoAIAPI/main/deploy_backend.sh
+wget https://raw.githubusercontent.com/aiziyrak-coder/MirzoAIAPI/main/deploy_frontend.sh
+wget https://raw.githubusercontent.com/aiziyrak-coder/MirzoAIAPI/main/deploy_backend_nginx.sh
+wget https://raw.githubusercontent.com/aiziyrak-coder/MirzoAIAPI/main/deploy_ssl.sh
+
+# Step 5: Make scripts executable
+chmod +x deploy*.sh
+
+# Step 6: Run complete deployment
+./deploy_all.sh
+
+# OR run step by step:
+# ./deploy_backend.sh
+# ./deploy_backend_nginx.sh
+# ./deploy_frontend.sh
+# ./deploy_ssl.sh
