@@ -54,12 +54,12 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         if phone.startswith('998') and len(phone) >= 12:
             phone = phone[3:]  # Remove 998 prefix
         
-        # Validate: should be 9 digits starting with 9
-        if len(phone) == 9 and phone.startswith('9'):
-            # Return with +998 prefix for consistency
+        # Validate: should be 9 digits (O'zbekiston: 50, 71, 73, 90, 91, 93, 94, 95, 97, 98, 99 bilan boshlanishi mumkin)
+        if len(phone) == 9 and phone.isdigit():
+            # Return with 998 prefix for consistency
             return '998' + phone
         else:
-            raise serializers.ValidationError("Telefon raqami noto'g'ri formatda. 9 raqam kiriting (masalan: 901234567)")
+            raise serializers.ValidationError("Telefon raqami noto'g'ri formatda. 9 raqam kiriting (masalan: 501234567, 901234567)")
 
     def validate_password(self, value):
         """Validate password strength"""
@@ -175,12 +175,13 @@ class AdminUserCreateSerializer(serializers.ModelSerializer):
         phone = value.replace('+', '').replace(' ', '').replace('-', '').replace('(', '').replace(')', '').strip()
         if not phone.isdigit():
             raise serializers.ValidationError("Telefon raqami faqat raqamlardan iborat bo'lishi kerak.")
-        if phone.startswith('998') and len(phone) >= 12:
+        if phone.startswith('998') and len(phone) == 12:
             return phone
-        elif phone.startswith('9') and len(phone) == 9:
+        elif len(phone) == 9 and phone.isdigit():
+            # O'zbekiston: 9 raqam (50, 71, 73, 90, 91, 93, 94, 95, 97, 98, 99 bilan boshlanishi mumkin)
             return '998' + phone
         else:
-            raise serializers.ValidationError("Telefon raqami noto'g'ri formatda. 9 raqam kiriting (masalan: 901234567)")
+            raise serializers.ValidationError("Telefon raqami noto'g'ri formatda. 9 raqam kiriting (masalan: 501234567, 901234567)")
     
     def create(self, validated_data):
         password = validated_data.pop('password')
@@ -204,12 +205,13 @@ class AdminUserUpdateSerializer(serializers.ModelSerializer):
         phone = value.replace('+', '').replace(' ', '').replace('-', '').replace('(', '').replace(')', '').strip()
         if not phone.isdigit():
             raise serializers.ValidationError("Telefon raqami faqat raqamlardan iborat bo'lishi kerak.")
-        if phone.startswith('998') and len(phone) >= 12:
+        if phone.startswith('998') and len(phone) == 12:
             return phone
-        elif phone.startswith('9') and len(phone) == 9:
+        elif len(phone) == 9 and phone.isdigit():
+            # O'zbekiston: 9 raqam (50, 71, 73, 90, 91, 93, 94, 95, 97, 98, 99 bilan boshlanishi mumkin)
             return '998' + phone
         else:
-            raise serializers.ValidationError("Telefon raqami noto'g'ri formatda. 9 raqam kiriting (masalan: 901234567)")
+            raise serializers.ValidationError("Telefon raqami noto'g'ri formatda. 9 raqam kiriting (masalan: 501234567, 901234567)")
     
     def validate_password(self, value):
         """Password is optional, but if provided, must be at least 3 characters"""

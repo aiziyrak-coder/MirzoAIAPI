@@ -29,7 +29,8 @@ export const Auth: React.FC<AuthProps> = ({ onLogin, onBack }) => {
 
     const validatePhoneNumber = (phone: string): boolean => {
         const cleaned = phone.replace(/\s|-|\(|\)|\+/g, '');
-        return /^9989\d{8}$/.test(cleaned);
+        // O'zbekiston: +998 dan keyin 9 raqam (50, 71, 73, 90, 91, 93, 94, 95, 97, 98, 99 bilan boshlanishi mumkin)
+        return /^998\d{9}$/.test(cleaned);
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -78,7 +79,7 @@ export const Auth: React.FC<AuthProps> = ({ onLogin, onBack }) => {
                 const finalPhone = phoneNumber.startsWith('+998') ? phoneNumber : '+998' + phoneNumber.replace(/\D/g, '');
                 
                 if (!validatePhoneNumber(finalPhone)) {
-                    setError("Telefon raqami noto'g'ri formatda. 9 raqam kiriting (masalan: 901234567)");
+                    setError("Telefon raqami noto'g'ri formatda. 9 raqam kiriting (masalan: 501234567, 901234567)");
                     return;
                 }
 
@@ -197,7 +198,7 @@ export const Auth: React.FC<AuthProps> = ({ onLogin, onBack }) => {
                                     />
                                 </div>
                                 {!isLogin && phoneNumber && !validatePhoneNumber(phoneNumber) && (
-                                    <p className="text-xs text-red-500 mt-1">Telefon raqam 9 raqamdan iborat bo'lishi kerak (998 dan keyin)</p>
+                                    <p className="text-xs text-red-500 mt-1">Telefon raqam 9 raqamdan iborat bo'lishi kerak (masalan: 501234567, 901234567)</p>
                                 )}
                             </div>
 

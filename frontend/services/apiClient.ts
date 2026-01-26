@@ -53,11 +53,12 @@ class ApiClient {
 
   // Auth methods
   async register(data: { fullName: string; phoneNumber: string; password: string; organization: string }) {
-    // Ensure phone number has +998 prefix
+    // Ensure phone number has 998 prefix
     let phone = data.phoneNumber.replace(/\D/g, '');
-    if (phone.startsWith('998')) {
+    if (phone.startsWith('998') && phone.length === 12) {
       phone = phone;
-    } else if (phone.startsWith('9') && phone.length === 9) {
+    } else if (phone.length === 9) {
+      // O'zbekiston: 9 raqam (50, 71, 73, 90, 91, 93, 94, 95, 97, 98, 99 bilan boshlanishi mumkin)
       phone = '998' + phone;
     } else {
       phone = '998' + phone;
@@ -79,12 +80,13 @@ class ApiClient {
   async login(data: { phoneNumber: string; password: string }) {
     // Ensure phone number has 998 prefix (without +)
     let phone = data.phoneNumber.replace(/\D/g, '');
-    if (!phone.startsWith('998')) {
-      if (phone.startsWith('9') && phone.length === 9) {
-        phone = '998' + phone;
-      } else {
-        phone = '998' + phone;
-      }
+    if (phone.startsWith('998') && phone.length === 12) {
+      phone = phone;
+    } else if (phone.length === 9) {
+      // O'zbekiston: 9 raqam (50, 71, 73, 90, 91, 93, 94, 95, 97, 98, 99 bilan boshlanishi mumkin)
+      phone = '998' + phone;
+    } else {
+      phone = '998' + phone;
     }
     
     const response = await this.client.post('/auth/login/', {
@@ -246,12 +248,13 @@ class ApiClient {
   }) {
     // Ensure phone number has 998 prefix (without +)
     let phone = data.phoneNumber.replace(/\D/g, '');
-    if (!phone.startsWith('998')) {
-      if (phone.startsWith('9') && phone.length === 9) {
-        phone = '998' + phone;
-      } else {
-        phone = '998' + phone;
-      }
+    if (phone.startsWith('998') && phone.length === 12) {
+      phone = phone;
+    } else if (phone.length === 9) {
+      // O'zbekiston: 9 raqam (50, 71, 73, 90, 91, 93, 94, 95, 97, 98, 99 bilan boshlanishi mumkin)
+      phone = '998' + phone;
+    } else {
+      phone = '998' + phone;
     }
     
     const response = await this.client.post('/admin/users/', {
@@ -280,12 +283,13 @@ class ApiClient {
     if (data.phoneNumber) {
       // Ensure phone number has 998 prefix (without +)
       let phone = data.phoneNumber.replace(/\D/g, '');
-      if (!phone.startsWith('998')) {
-        if (phone.startsWith('9') && phone.length === 9) {
-          phone = '998' + phone;
-        } else {
-          phone = '998' + phone;
-        }
+      if (phone.startsWith('998') && phone.length === 12) {
+        phone = phone;
+      } else if (phone.length === 9) {
+        // O'zbekiston: 9 raqam (50, 71, 73, 90, 91, 93, 94, 95, 97, 98, 99 bilan boshlanishi mumkin)
+        phone = '998' + phone;
+      } else {
+        phone = '998' + phone;
       }
       payload.phone_number = phone;
     }

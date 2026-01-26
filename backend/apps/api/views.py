@@ -65,7 +65,8 @@ class AuthViewSet(viewsets.ViewSet):
                 # Ensure phone number format (remove +, ensure starts with 998)
                 phone_number = phone_number.replace('+', '').replace(' ', '').strip()
                 if not phone_number.startswith('998'):
-                    if phone_number.startswith('9') and len(phone_number) == 9:
+                    if len(phone_number) == 9:
+                        # O'zbekiston: 9 raqam (50, 71, 73, 90, 91, 93, 94, 95, 97, 98, 99 bilan boshlanishi mumkin)
                         phone_number = '998' + phone_number
                     else:
                         import re
@@ -215,9 +216,21 @@ class DocumentViewSet(viewsets.ViewSet):
         serializer = RefineDocumentSerializer(data=request.data)
         
         if not serializer.is_valid():
+            # Format error message properly
+            error_msg = serializer.errors
+            if isinstance(error_msg, dict):
+                first_key = list(error_msg.keys())[0] if error_msg else None
+                if first_key:
+                    first_value = error_msg[first_key]
+                    if isinstance(first_value, list) and len(first_value) > 0:
+                        error_msg = f"{first_key}: {first_value[0]}"
+                    else:
+                        error_msg = f"{first_key}: {str(first_value)}"
+                else:
+                    error_msg = "Ma'lumotlar noto'g'ri"
             return Response({
                 'success': False,
-                'error': serializer.errors
+                'error': str(error_msg)
             }, status=status.HTTP_400_BAD_REQUEST)
         
         original_html = serializer.validated_data['original_html']

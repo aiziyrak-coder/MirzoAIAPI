@@ -3,9 +3,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { DocumentType, GroundingSource, Sector } from '../types';
 import { generateDocument, refineDocument } from '../services/geminiService';
+import { apiClient } from '../services/apiClient';
 
 export const DocumentGenerator: React.FC = () => {
-  const [organization, setOrganization] = useState('Farg\'ona shahar hokimligi');
+  const [organization, setOrganization] = useState('');
   const [sector, setSector] = useState<Sector>(Sector.HOKIMYAT);
   const [docType, setDocType] = useState<DocumentType>(DocumentType.HISOBOT);
   const [topic, setTopic] = useState('');
@@ -13,9 +14,28 @@ export const DocumentGenerator: React.FC = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
+  const [currentUser, setCurrentUser] = useState<any>(null);
   
   // Dynamic Placeholder
   const [placeholder, setPlaceholder] = useState('');
+
+  // Load user on mount to get organization
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        const response = await apiClient.getCurrentUser();
+        if (response.success && response.user) {
+          setCurrentUser(response.user);
+          if (response.user.organization) {
+            setOrganization(response.user.organization);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to load user:', error);
+      }
+    };
+    loadUser();
+  }, []);
 
   // Refinement State
   const [refining, setRefining] = useState(false);
@@ -137,6 +157,7 @@ export const DocumentGenerator: React.FC = () => {
 
   const handleGenerate = async () => {
     if (!topic) return alert("Mavzuni kiriting");
+    if (!organization) return alert("Tashkilot nomini kiriting");
     setLoading(true);
     setResult('');
     setSources([]);
@@ -146,7 +167,22 @@ export const DocumentGenerator: React.FC = () => {
       if (response.sources) setSources(response.sources);
       // History is now automatically saved on backend
     } catch (error: any) {
-      alert("Xatolik: " + (error.message || error));
+      // Better error handling - parse error object properly
+      let errorMessage = 'Hujjat yaratishda xatolik yuz berdi';
+      if (error.response?.data?.error) {
+        const err = error.response.data.error;
+        if (typeof err === 'string') {
+          errorMessage = err;
+        } else if (typeof err === 'object') {
+          // If error is an object, get first error message
+          const firstKey = Object.keys(err)[0];
+          const firstValue = err[firstKey];
+          errorMessage = Array.isArray(firstValue) ? firstValue[0] : String(firstValue);
+        }
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      alert("Xatolik: " + errorMessage);
     } finally {
       setLoading(false);
     }
@@ -161,7 +197,21 @@ export const DocumentGenerator: React.FC = () => {
           setRefineInstruction('');
           setRefineFiles([]);
       } catch (e: any) {
-          alert("Xatolik: " + (e.message || e));
+          // Better error handling
+          let errorMessage = 'Hujjatni tahrirlashda xatolik yuz berdi';
+          if (e.response?.data?.error) {
+            const err = e.response.data.error;
+            if (typeof err === 'string') {
+              errorMessage = err;
+            } else if (typeof err === 'object') {
+              const firstKey = Object.keys(err)[0];
+              const firstValue = err[firstKey];
+              errorMessage = Array.isArray(firstValue) ? firstValue[0] : String(firstValue);
+            }
+          } else if (e.message) {
+            errorMessage = e.message;
+          }
+          alert("Xatolik: " + errorMessage);
       } finally {
           setRefining(false);
       }

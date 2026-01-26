@@ -36,12 +36,12 @@ export const Dashboard: React.FC<DashboardProps> = ({ onChangeView }) => {
         loadUser();
     }, []);
 
-    // Stats data (Mock data for display)
+    // Stats data - Yangi foydalanuvchilar uchun 0 ko'rsatiladi
     const kpiStats = [
-        { title: "Ijro Intizomi", value: "94%", change: "+2.5%", isGood: true, icon: "🎯", bg: "bg-emerald-50 text-emerald-700" },
-        { title: "Kelib tushgan", value: "128", change: "Bugun", isGood: true, icon: "inbox", bg: "bg-blue-50 text-blue-700" },
-        { title: "Ko'rib chiqilmoqda", value: "15", change: "-4 ta", isGood: false, icon: "clock", bg: "bg-orange-50 text-orange-700" },
-        { title: "Imzolangan", value: "42", change: "Hafta davomida", isGood: true, icon: "signature", bg: "bg-purple-50 text-purple-700" },
+        { title: "Ijro Intizomi", value: "0%", change: "Yangi", isGood: false, icon: "🎯", bg: "bg-slate-50 text-slate-500" },
+        { title: "Kelib tushgan", value: "0", change: "Hozircha", isGood: false, icon: "inbox", bg: "bg-slate-50 text-slate-500" },
+        { title: "Ko'rib chiqilmoqda", value: "0", change: "Hozircha", isGood: false, icon: "clock", bg: "bg-slate-50 text-slate-500" },
+        { title: "Imzolangan", value: "0", change: "Hozircha", isGood: false, icon: "signature", bg: "bg-slate-50 text-slate-500" },
     ];
 
     useEffect(() => {
