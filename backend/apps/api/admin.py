@@ -76,10 +76,14 @@ class UserAdmin(admin.ModelAdmin):
     add_form = CustomUserCreationForm
     
     list_display = ['full_name', 'phone_number', 'organization', 'subscription_status', 'is_admin', 'is_active', 'date_joined']
+    list_display_links = ['full_name', 'phone_number']
     list_filter = ['subscription_status', 'is_admin', 'is_active', 'date_joined']
     search_fields = ['full_name', 'phone_number', 'organization']
     ordering = ['-date_joined']
     readonly_fields = ['date_joined', 'updated_at']
+    list_per_page = 50  # Har sahifada 50 ta user ko'rsatish
+    list_max_show_all = 200  # "Show all" tugmasi maksimal 200 ta ko'rsatadi
+    show_full_result_count = True  # To'liq sonni ko'rsatish
     
     fieldsets = (
         (None, {
